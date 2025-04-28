@@ -1,22 +1,24 @@
 #include <Arduino_BuiltIn.h>
-#include "utils.h"
+#include "aws_utils.h"
+#include "ultrasonic_utils.h"
 #include <PubSubClient.h>
+
+const int trigPin = 2;
+const int echoPin = 4;
 
 void setup() {
   // put your setup code here, to run once:
-  Serial.begin(115200);
+  Serial.begin(9600);
   connectAWS();
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  int metricsValue = random(1,100);
-  Serial.print(F("metrics"));
-  Serial.print(metricsValue);
   
-  publishMessage(metricsValue);
-  
-  client.loop();
+  long cm = ultrasonic_ping(trigPin, echoPin);
+  publishMessage(cm);
   delay(1000);
+  client.loop();
 
 }
